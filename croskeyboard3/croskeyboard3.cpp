@@ -710,7 +710,7 @@ void keyPressed(PCROSKEYBOARD_CONTEXT pDevice) {
 
 	updateSpecialKeys(pDevice, ps2code);
 
-	bool overrideCtrl = false;
+	bool overrideLCtrl = false;
 	bool overrideRCtrl = false;
 	bool overrideAlt = false;
 	bool overrideAltGr = false;
@@ -724,134 +724,250 @@ void keyPressed(PCROSKEYBOARD_CONTEXT pDevice) {
 	for (int i = 0; i < KBD_KEY_CODES; i++) {
 		keyCodes[i] = pDevice->keyCodes[i];
 		BYTE keyCode = keyCodes[i];
+		if (keyCode == 0x3a) {
+			overrideAlt = true;
+			keyCodes[i] = 0x50;
+			// F1 to Alt+Back Arrow
+		}
+		else if (keyCode == 0x3b) {
+			overrideAlt = true;
+			keyCodes[i] = 0x4f;
+			// F2 to Alt+Forward Arrow
+		}
+		else if (keyCode == 0x3c) {
+			keyCodes[i] = 0x3e;
+			// F3 to F5
+			if (pDevice->LeftAlt || pDevice->RightAlt)
+				keyCodes[i] = 0x3d; // Alt+F3 to Alt+F4
+		}
+		else if (keyCode == 0x3d) {
+			keyCodes[i] = 0x44;
+			// F4 to F11
+			if (pDevice->LeftAlt || pDevice->RightAlt)
+				keyCodes[i] = 0x3d; // Alt+F3 to Alt+F4
+		}
+		else if (keyCode == 0x3e) {
+			overrideWin = true;
+			keyCodes[i] = 0x2b;
+			// F5 to Win+Tab
+		}
+		else if (keyCode == 0x3f) {
+			mediaKey = true;
+			consumerKey = 0x02;
+			// F6 to Brightness Down
+		}
+		else if (keyCode == 0x40) {
+			mediaKey = true;
+			consumerKey = 0x01;
+			// F7 to Brightness Up
+		}
+		else if (keyCode == 0x41) {
+			mediaKey = true;
+			consumerKey = 0x10;
+			// F8 to Mute
+		}
+		else if (keyCode == 0x42) {
+			mediaKey = true;
+			consumerKey = 0x40;
+			// F9 to Volume Down
+		}
+		else if (keyCode == 0x43) {
+			mediaKey = true;
+			consumerKey = 0x20;
+			// F10 to Volume Up
+		}
+
 		if (pDevice->LeftCtrl) {
-			if (keyCode == 0x3a) {
-				overrideCtrl = true;
-				overrideAlt = true;
-				keyCodes[i] = 0x50;
-				//Alt+Back Arrow (F1)
+			if (keyCode == 0x2a) {
+				if (!(pDevice->LeftAlt || pDevice->RightAlt))
+					overrideLCtrl = true; // LCtrl+Alt+Backspace to Ctrl+Alt+Delete
+				keyCodes[i] = 0x4c; // LCtrl+Backspace to Delete
 			}
-			else if (keyCode == 0x3b) {
-				overrideCtrl = true;
-				overrideAlt = true;
-				keyCodes[i] = 0x4f;
-				//Alt+Forward Arrow (F2)
-			}
-			else if (keyCode == 0x3c) {
-				overrideCtrl = true;
-				keyCodes[i] = 0x3e;
-				//F5 (F3)
-			}
-			else if (keyCode == 0x3d) {
-				overrideCtrl = true;
-				keyCodes[i] = 0x44;
-				//F11 (F4)
-			}
-			else if (keyCode == 0x3e) {
-				if (pDevice->LeftShift) {
-					overrideCtrl = true;
-					overrideWin = true;
-					overrideShift = true;
-					keyCodes[i] = 0x46;
-					//Win + Print Screen (Shift + F5)
-				}
-				else {
-					overrideCtrl = true;
-					overrideWin = true;
-					keyCodes[i] = 0x2b;
-					//win+tab (F5)
+			else if (keyCode == 0x50) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideLCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4a; // LCtrl+Alt+Left to Home
 				}
 			}
-			else if (keyCode == 0x3f) {
-				mediaKey = true;
-				consumerKey = 0x02;
-				//brightness down (F6)
-			}
-			else if (keyCode == 0x40) {
-				mediaKey = true;
-				consumerKey = 0x01;
-				//brightness up (F7)
-			}
-			else if (keyCode == 0x41) {
-				mediaKey = true;
-				consumerKey = 0x10; //mute (F8)
-			}
-			else if (keyCode == 0x42) {
-				mediaKey = true;
-				consumerKey = 0x40; //volume down (F9)
-			}
-			else if (keyCode == 0x43) {
-				mediaKey = true;
-				consumerKey = 0x20; //volume up (F10)
-			}
-			else if (keyCode == 0x2a) {
-				if (!pDevice->LeftAlt)
-					overrideCtrl = true;
-				keyCodes[i] = 0x4c; //delete (backspace)
+			else if (keyCode == 0x4f) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideLCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4d; // LCtrl+Alt+Right to End
+				}
 			}
 			else if (keyCode == 0x52) {
-				overrideCtrl = true;
-				keyCodes[i] = 0x4b; //page up (up arrow)
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideLCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4b; // LCtrl+Alt+Up to PageUp
+				}
 			}
 			else if (keyCode == 0x51) {
-				overrideCtrl = true;
-				keyCodes[i] = 0x4e; //page down (down arrow)
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideLCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4e; // LCtrl+Alt+Down to PageDown
+				}
 			}
 		}
-		if (pDevice->RightCtrl) {
-			if (keyCode == 0x1E) {
-				overrideRCtrl = true;
-				keyCodes[i] = 0x3A; //F1 (1)
+
+		if (pDevice->LeftShift || pDevice->RightShift) {
+			if (pDevice->LeftWin) {
+				overrideShift = true;
+				overrideWin = true;
+				keyCodes[i] = 0x39; // Shift+Win to CapsLock
 			}
-			else if (keyCode == 0x1F) {
+		}
+
+		if (pDevice->RightCtrl) {
+			if (keyCode == 0x1e) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x3B; //F2 (2)
+				keyCodes[i] = 0x3a; // Fn+1 to F1
+			}
+			else if (keyCode == 0x1f) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x3b; // Fn+2 to F2
 			}
 			else if (keyCode == 0x20) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x3C; //F3 (3)
+				keyCodes[i] = 0x3c; // Fn+3 to F3
 			}
 			else if (keyCode == 0x21) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x3D; //F4 (4)
+				keyCodes[i] = 0x3d; // Fn+4 to F4
 			}
 			else if (keyCode == 0x22) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x3E; //F5 (5)
+				keyCodes[i] = 0x3e; // Fn+5 to F5
 			}
 			else if (keyCode == 0x23) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x3F; //F6 (6)
+				keyCodes[i] = 0x3f; // Fn+6 to F6
 			}
 			else if (keyCode == 0x24) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x40; //F7 (7)
+				keyCodes[i] = 0x40; // Fn+7 to F7
 			}
 			else if (keyCode == 0x25) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x41; //F8 (8)
+				keyCodes[i] = 0x41; // Fn+8 to F8
 			}
 			else if (keyCode == 0x26) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x42; //F9 (9)
+				keyCodes[i] = 0x42; // Fn+9 to F9
 			}
 			else if (keyCode == 0x27) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x43; //F10 (0)
+				keyCodes[i] = 0x43; // Fn+0 to F10
 			}
-			else if (keyCode == 0x2D) {
+			else if (keyCode == 0x2d) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x44; //F11 (-)
+				keyCodes[i] = 0x44; // Fn+- to F11
 			}
-			else if (keyCode == 0x2E) {
+			else if (keyCode == 0x2e) {
 				overrideRCtrl = true;
-				keyCodes[i] = 0x45; //F12 (=)
+				keyCodes[i] = 0x45; // Fn+= to F12
+			}
+			else if (keyCode == 0x0c) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x49; // Fn+i to Insert
+			}
+			else if (keyCode == 0x13) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x46; // Fn+p to PrintScrn
+			}
+			else if (keyCode == 0x2f) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x47; // Fn+[ to ScrollLock
+			}
+			else if (keyCode == 0x30) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x48; // Fn+] to Pause
+			}
+			else if (keyCode == 0x36) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x65; // Fn+, to App
+			}
+			else if (keyCode == 0x33) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x4a; // Fn+; to Home
+			}
+			else if (keyCode == 0x37) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x4d; // Fn+. to End
+			}
+			else if (keyCode == 0x34) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x4b; // Fn+' to PageUp
+			}
+			else if (keyCode == 0x38) {
+				overrideRCtrl = true;
+				keyCodes[i] = 0x4e; // Fn+/ to PageDown
+			}
+			else if (keyCode == 0x50) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideRCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4a; // Fn+Alt+Left to Home
+				}
+			}
+			else if (keyCode == 0x4f) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideRCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4d; // Fn+Alt+Right to End
+				}
+			}
+			else if (keyCode == 0x52) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideRCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4b; // Fn+Alt+Up to PageUp
+				}
+			}
+			else if (keyCode == 0x51) {
+				if (pDevice->LeftAlt || pDevice->RightAlt) {
+					overrideRCtrl = true;
+					if (pDevice->LeftAlt)
+						overrideAlt = true;
+					else
+						overrideAltGr = true;
+					keyCodes[i] = 0x4e; // Fn+Alt+Down to PageDown
+				}
+			}
+			else if (keyCode == 0x2a) {
+				if (!(pDevice->LeftAlt || pDevice->RightAlt))
+					overrideRCtrl = true; // Fn+Alt+Backspace to Ctrl+Alt+Delete
+				keyCodes[i] = 0x4c; // Fn+Backspace to Delete
 			}
 		}
 	}
 
 	BYTE ShiftKeys = 0;
-	if (pDevice->LeftCtrl != overrideCtrl)
+	if (pDevice->LeftCtrl != overrideLCtrl)
 		ShiftKeys |= KBD_LCONTROL_BIT;
 	if (pDevice->LeftAlt != overrideAlt)
 		ShiftKeys |= KBD_LALT_BIT;

@@ -1,64 +1,74 @@
 # croskeyboard3
-HID Keyboard driver with function keys for Chromebooks that use the Chromium EC
+HID Keyboard driver with function keys for Chromebooks that use the Chromium EC, with a Poker2-based layout.
 
 # Compatibility
 Works on the Chromebook Pixel and any chromebook released after the Pixel.
 
 # Function key mapping
 
-Left Ctrl + F1 = Back
+The top row (brightness, volume, etc) keys now work like they do in ChromeOS, requiring no modifiers to be held to use them.
 
-Left Ctrl + F2 = Forward
+Search = Win
 
-Left Ctrl + F3 = Refresh
+Shift + Search = CapsLock
 
-Left Ctrl + F4 = Full Screen
+Alt + Refresh = Alt + Fullscreen = Alt + F4
 
-Left Ctrl + F5 = Task View
+Ctrl + Alt + Backspace = Ctrl + Alt + Delete
 
-Left Ctrl + Shift + F5 = Capture Screenshot
+Ctrl + Alt + Up    = Page Up
 
-Left Ctrl + F6 = Brightness Down
+Ctrl + Alt + Down  = Page Down
 
-Left Ctrl + F7 = Brightness Up
+Ctrl + Alt + Left  = Home
 
-Left Ctrl + F8 = Volume Mute
+Ctrl + Alt + Right = End
 
-Left Ctrl + F9 = Volume Down
+Right Control also functions as a "Fn" key:
 
-Left Ctrl + F10 = Volume Up
+Fn + 1 = F1
 
-Left Ctrl + Backspace = Delete
+Fn + 2 = F2
 
-Left Ctrl + Alt + Backspace = Ctrl + Alt + Delete
+Fn + 3 = F3
 
-Left Ctrl + Up = Page Up
+Fn + 4 = F4
 
-Left Ctrl + Down = Page Down
+Fn + 5 = F5
 
-Right Ctrl + 1 = F1
+Fn + 6 = F6
 
-Right Ctrl + 2 = F2
+Fn + 7 = F7
 
-Right Ctrl + 3 = F3
+Fn + 8 = F8
 
-Right Ctrl + 4 = F4
+Fn + 9 = F9
 
-Right Ctrl + 5 = F5
+Fn + 0 = F10
 
-Right Ctrl + 6 = F6
+Fn + "-/_" = F11
 
-Right Ctrl + 7 = F7
+Fn + "=/+" = F12
 
-Right Ctrl + 8 = F8
+Fn + i = Insert
 
-Right Ctrl + 9 = F9
+Fn + p = Print Screen
 
-Right Ctrl + 0 = F10
+Fn + [ = Scroll Lock
 
-Right Ctrl + - = F11
+Fn + ] = Pause/Break
 
-Right Ctrl + = = F12
+Fn + ' = Page Up
+
+Fn = / = Page Down
+
+Fn + ; = Home
+
+Fn + . = End
+
+Fn + Backspace = Delete
+
+Fn + , = App
 
 # License
 croskeyboard3 is © 2015, CoolStar.
